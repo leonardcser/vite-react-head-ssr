@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useLocation, useMatches } from "react-router";
-import type { AppRouteObject } from "./routes"; // Ensure this path is correct
+import type { AppRouteObject } from "./routes";
 import { HeadSeo } from "./components/head-seo";
 
 function CurrentRouteHead() {

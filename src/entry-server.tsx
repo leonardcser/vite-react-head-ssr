@@ -1,6 +1,6 @@
 import React, { StrictMode } from "react";
 import { renderToString } from "react-dom/server";
-import { createStaticHandler, type StaticHandlerContext } from "react-router"; // Use main export
+import { createStaticHandler, type StaticHandlerContext } from "react-router";
 import type { AppRouteObject } from "./routes";
 import { routes } from "./routes";
 
