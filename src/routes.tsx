@@ -1,19 +1,9 @@
-import React, { lazy } from "react";
+import React from "react";
 import type { RouteObject, RouterState } from "react-router";
 import { HeadSeo } from "./components/head-seo";
 import { HomeLayout } from "./components/layouts/home-layout";
-
-// Define loader functions for lazy components
-const loadHomePage = () =>
-  import("./pages/home-page").then((module) => ({ default: module.HomePage }));
-const loadAboutPage = () =>
-  import("./pages/about-page").then((module) => ({
-    default: module.AboutPage,
-  }));
-
-// Lazy load page components using the loaders
-const LazyHomePage = lazy(loadHomePage);
-const LazyAboutPage = lazy(loadAboutPage);
+import { HomePage } from "./pages/home-page";
+import { AboutPage } from "./pages/about-page";
 
 export interface RouteHandle {
   head?:
@@ -25,12 +15,10 @@ export interface RouteHandle {
           location: RouterState["location"];
         }
       ) => React.ReactElement);
-  prefetchComponent?: () => Promise<unknown>;
 }
 
 export type AppRouteObject = RouteObject & {
   handle?: RouteHandle;
-  componentIdentifier?: string;
 };
 
 export const routes: AppRouteObject[] = [
@@ -38,36 +26,31 @@ export const routes: AppRouteObject[] = [
     path: "/",
     element: (
       <HomeLayout>
-        <LazyHomePage />
+        <HomePage />
       </HomeLayout>
     ),
-    componentIdentifier: "src/pages/home-page.tsx",
     handle: {
       head: <HeadSeo title="Home" description="This is the home page" />,
-      prefetchComponent: loadHomePage,
     },
   },
   {
     path: "/about",
     element: (
       <HomeLayout>
-        <LazyAboutPage />
+        <AboutPage />
       </HomeLayout>
     ),
-    componentIdentifier: "src/pages/about-page.tsx",
     handle: {
       head: <HeadSeo title="About" description="This is the about page" />,
-      prefetchComponent: loadAboutPage,
     },
   },
   {
     path: "/about/:name",
     element: (
       <HomeLayout>
-        <LazyAboutPage />
+        <AboutPage />
       </HomeLayout>
     ),
-    componentIdentifier: "src/pages/about-page.tsx",
     handle: {
       head: (params) => (
         <HeadSeo
@@ -75,7 +58,6 @@ export const routes: AppRouteObject[] = [
           description={`About page for ${params.name}`}
         />
       ),
-      prefetchComponent: loadAboutPage,
     },
   },
 ];

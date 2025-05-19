@@ -1,16 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { pathToFileURL } from "node:url"; // For robust dynamic importing
+import { pathToFileURL } from "node:url";
 import express from "express";
-// Vite types and server creation are conditionally imported for dev mode
 import type { ViteDevServer } from "vite";
 
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
-const root = __dirname; // Assuming server.ts is at the project root
+const root = __dirname;
 const isProduction = process.env.NODE_ENV === "production";
-const baseOutDir = "dist"; // Standard output directory base
-
-let ssrManifest: Record<string, string[]> | undefined = undefined;
+const baseOutDir = "dist";
 
 async function createServer() {
   const app = express();
@@ -28,20 +25,6 @@ async function createServer() {
   } else {
     // Production: serve static assets from dist/client
     const clientDistPath = path.resolve(root, baseOutDir, "client");
-
-    // Load SSR manifest in production
-    const manifestPath = path.resolve(
-      clientDistPath,
-      ".vite/ssr-manifest.json"
-    );
-    try {
-      ssrManifest = JSON.parse(await fs.readFile(manifestPath, "utf-8"));
-      console.log("SSR manifest loaded.");
-    } catch (e) {
-      console.error("Failed to load SSR manifest:", e);
-      // Depending on your error handling strategy, you might want to exit or proceed without it
-    }
-
     app.use(
       express.static(clientDistPath, {
         index: false, // Don't serve index.html by default, let the catch-all handle it
@@ -97,10 +80,7 @@ async function createServer() {
       );
 
       // Pass ssrManifest to render function in production
-      const { headHtml, preloadLinks } = await render(
-        fetchRequest,
-        isProduction ? ssrManifest : undefined
-      );
+      const { headHtml, preloadLinks } = await render(fetchRequest);
 
       const html = template
         .replace(`<!--app-head-->`, `${preloadLinks || ""}${headHtml || ""}`)
