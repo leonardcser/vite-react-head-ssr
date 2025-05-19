@@ -28,7 +28,7 @@ interface SeoTagDefinition {
 
 const getSeoTagsDefinition = (props: HeadSeoProps): SeoTagDefinition[] => {
   const {
-    title = "Dafthunk",
+    title,
     description,
     keywords,
     ogTitle,

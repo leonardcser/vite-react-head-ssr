@@ -2,14 +2,15 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { App } from "./app";
+import { ErrorPage } from "./pages/error-page";
 import { routes } from "./routes";
-import "./index.css"; // Assuming you have a basic CSS file
+import "./index.css";
 
 const router = createBrowserRouter([
   {
     element: <App />,
     children: routes,
-    // You might want a global error element here too
+    errorElement: <ErrorPage />,
   },
 ]);
 

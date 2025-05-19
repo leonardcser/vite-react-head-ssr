@@ -1,10 +1,10 @@
 import { type PropsWithChildren } from "react";
-import { Outlet, Link } from "react-router";
+import { Link } from "react-router";
 
 export function HomeLayout({ children }: PropsWithChildren) {
   return (
     <>
-      <nav className="bg-gray-800 text-white p-4">
+      <nav className="bg-black text-white p-4">
         <ul className="flex space-x-4">
           <li>
             <Link to="/" className="hover:text-gray-300">
@@ -23,11 +23,7 @@ export function HomeLayout({ children }: PropsWithChildren) {
           </li>
         </ul>
       </nav>
-      <div className="p-4">
-        {/* If HomeLayout wraps specific components, Outlet might not be needed here anymore or replaced by children */}
-        {/* For now, assuming children are the page content to be rendered directly */}
-        {children ?? <Outlet />}
-      </div>
+      <div className="p-4">{children}</div>
     </>
   );
 }

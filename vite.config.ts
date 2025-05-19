@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { dualBuildPlugin } from "./vite-plugin-dual-build";
+import { reactHeadSsr } from "./vite-plugin-react-head-ssr";
 import tailwindcss from "@tailwindcss/vite";
 
 const ReactCompilerConfig = {};
@@ -14,8 +14,6 @@ export default defineConfig({
       },
     }),
     tailwindcss(),
-    dualBuildPlugin(),
+    reactHeadSsr(),
   ],
-  // Note: The top-level `build.outDir` (if any) will be used as the base by dualBuildPlugin.
-  // If not specified, it defaults to 'dist'.
 });
