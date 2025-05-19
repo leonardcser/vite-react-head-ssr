@@ -4,7 +4,10 @@ import { createStaticHandler, type StaticHandlerContext } from "react-router"; /
 import type { AppRouteObject } from "./routes";
 import { routes } from "./routes";
 
-export async function render(req: Request) {
+export async function render(
+  req: Request,
+  manifest?: Record<string, string[]> // Optional SSR manifest
+) {
   const handler = createStaticHandler(routes as AppRouteObject[]);
   const fetchRequest = req;
 
@@ -16,6 +19,8 @@ export async function render(req: Request) {
   }
 
   let headHtml = "";
+  let preloadLinks = "";
+
   // Extract head from the matched route if available
   // The context.matches might be undefined if no routes matched, or if it's a data route, etc.
   // For this basic example, we assume context is a RouteMatch array for matched UI routes.
@@ -38,6 +43,20 @@ export async function render(req: Request) {
           );
         }
       }
+
+      // Generate preload links if manifest and componentIdentifier are available
+      if (manifest && routeDefinition.componentIdentifier) {
+        const componentAssets = manifest[routeDefinition.componentIdentifier];
+        if (componentAssets) {
+          componentAssets.forEach((asset) => {
+            if (asset.endsWith(".js")) {
+              preloadLinks += `<link rel="modulepreload" crossorigin href="${asset}">\n`;
+            } else if (asset.endsWith(".css")) {
+              preloadLinks += `<link rel="stylesheet" href="${asset}">\n`;
+            }
+          });
+        }
+      }
     }
   }
 
@@ -53,6 +72,7 @@ export async function render(req: Request) {
 
   return {
     headHtml,
+    preloadLinks, // Return preload links
     context /* appHtml could be returned here if rendering body */,
   };
 }

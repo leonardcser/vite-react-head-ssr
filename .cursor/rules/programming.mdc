@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Do not import `React` if it is not used in tsx files. `React` is already imported implicitly
+- `react-router-dom` is depricated instead use `react-router` (v7) for imports
+- Use kebab file names for all ts/tsx files
+- For styling use tailwindcss v4
+- Use pnpm not npm. (see [package.json](mdc:package.json))
+- When removing code, DO NOT leave it commened out, instead delete the lines, not commented out code

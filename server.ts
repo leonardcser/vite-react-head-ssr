@@ -10,6 +10,8 @@ const root = __dirname; // Assuming server.ts is at the project root
 const isProduction = process.env.NODE_ENV === "production";
 const baseOutDir = "dist"; // Standard output directory base
 
+let ssrManifest: Record<string, string[]> | undefined = undefined;
+
 async function createServer() {
   const app = express();
   let vite: ViteDevServer | undefined;
@@ -26,6 +28,20 @@ async function createServer() {
   } else {
     // Production: serve static assets from dist/client
     const clientDistPath = path.resolve(root, baseOutDir, "client");
+
+    // Load SSR manifest in production
+    const manifestPath = path.resolve(
+      clientDistPath,
+      ".vite/ssr-manifest.json"
+    );
+    try {
+      ssrManifest = JSON.parse(await fs.readFile(manifestPath, "utf-8"));
+      console.log("SSR manifest loaded.");
+    } catch (e) {
+      console.error("Failed to load SSR manifest:", e);
+      // Depending on your error handling strategy, you might want to exit or proceed without it
+    }
+
     app.use(
       express.static(clientDistPath, {
         index: false, // Don't serve index.html by default, let the catch-all handle it
@@ -38,7 +54,10 @@ async function createServer() {
 
     try {
       let template: string;
-      let render: (req: Request) => Promise<{ headHtml: string }>;
+      let render: (
+        req: Request,
+        manifest?: Record<string, string[]>
+      ) => Promise<{ headHtml: string; preloadLinks?: string }>;
 
       if (!isProduction && vite) {
         // Development: read and transform index.html, load entry-server via Vite
@@ -77,10 +96,14 @@ async function createServer() {
         }
       );
 
-      const { headHtml } = await render(fetchRequest);
+      // Pass ssrManifest to render function in production
+      const { headHtml, preloadLinks } = await render(
+        fetchRequest,
+        isProduction ? ssrManifest : undefined
+      );
 
       const html = template
-        .replace(`<!--app-head-->`, headHtml ?? "")
+        .replace(`<!--app-head-->`, `${preloadLinks || ""}${headHtml || ""}`)
         .replace(`<!--app-html-->`, ""); // Body is client-rendered
 
       res.status(200).set({ "Content-Type": "text/html" }).end(html);

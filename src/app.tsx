@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Outlet, useLocation, useMatches } from "react-router";
+import { Outlet, useLocation, useMatches } from "react-router";
 import type { AppRouteObject } from "./routes"; // Ensure this path is correct
 import { HeadSeo } from "./components/head-seo";
 
@@ -40,28 +40,7 @@ export function App() {
   return (
     <>
       <CurrentRouteHead />
-      <nav className="bg-gray-800 text-white p-4">
-        <ul className="flex space-x-4">
-          <li>
-            <Link to="/" className="hover:text-gray-300">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/about" className="hover:text-gray-300">
-              About
-            </Link>
-          </li>
-          <li>
-            <Link to="/about/ssr" className="hover:text-gray-300">
-              About SSR
-            </Link>
-          </li>
-        </ul>
-      </nav>
-      <div className="p-4">
-        <Outlet />
-      </div>
+      <Outlet />
     </>
   );
 }
