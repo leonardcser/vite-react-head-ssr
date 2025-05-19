@@ -24,7 +24,6 @@ export function reactHeadSsr(): Plugin {
         config.build = {
           ...config.build,
           outDir: resolvedClientOutDir,
-          ssrManifest: true, // Generate SSR manifest for client assets
         };
       }
       return config;

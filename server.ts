@@ -79,7 +79,6 @@ async function createServer() {
         }
       );
 
-      // Pass ssrManifest to render function in production
       const { headHtml, preloadLinks } = await render(fetchRequest);
 
       const html = template
