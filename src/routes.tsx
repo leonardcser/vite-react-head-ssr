@@ -3,13 +3,17 @@ import type { RouteObject, RouterState } from "react-router";
 import { HeadSeo } from "./components/head-seo";
 import { HomeLayout } from "./components/layouts/home-layout";
 
-// Lazy load page components
-const LazyHomePage = lazy(() =>
-  import("./pages/home-page").then((module) => ({ default: module.HomePage }))
-);
-const LazyAboutPage = lazy(() =>
-  import("./pages/about-page").then((module) => ({ default: module.AboutPage }))
-);
+// Define loader functions for lazy components
+const loadHomePage = () =>
+  import("./pages/home-page").then((module) => ({ default: module.HomePage }));
+const loadAboutPage = () =>
+  import("./pages/about-page").then((module) => ({
+    default: module.AboutPage,
+  }));
+
+// Lazy load page components using the loaders
+const LazyHomePage = lazy(loadHomePage);
+const LazyAboutPage = lazy(loadAboutPage);
 
 export interface RouteHandle {
   head?:
@@ -21,6 +25,7 @@ export interface RouteHandle {
           location: RouterState["location"];
         }
       ) => React.ReactElement);
+  prefetchComponent?: () => Promise<unknown>;
 }
 
 export type AppRouteObject = RouteObject & {
@@ -39,6 +44,7 @@ export const routes: AppRouteObject[] = [
     componentIdentifier: "src/pages/home-page.tsx",
     handle: {
       head: <HeadSeo title="Home" description="This is the home page" />,
+      prefetchComponent: loadHomePage,
     },
   },
   {
@@ -51,6 +57,7 @@ export const routes: AppRouteObject[] = [
     componentIdentifier: "src/pages/about-page.tsx",
     handle: {
       head: <HeadSeo title="About" description="This is the about page" />,
+      prefetchComponent: loadAboutPage,
     },
   },
   {
@@ -68,6 +75,7 @@ export const routes: AppRouteObject[] = [
           description={`About page for ${params.name}`}
         />
       ),
+      prefetchComponent: loadAboutPage,
     },
   },
 ];

@@ -1,6 +1,7 @@
 import { Suspense, type PropsWithChildren } from "react";
-import { Link, Outlet } from "react-router";
+import { Outlet } from "react-router";
 import { FadeInContent } from "../fade-in-content";
+import { PrefetchLink } from "../prefetch-link";
 
 export function HomeLayout({ children }: PropsWithChildren) {
   return (
@@ -8,19 +9,19 @@ export function HomeLayout({ children }: PropsWithChildren) {
       <nav className="bg-gray-800 text-white p-4">
         <ul className="flex space-x-4">
           <li>
-            <Link to="/" className="hover:text-gray-300">
+            <PrefetchLink to="/" className="hover:text-gray-300">
               Home
-            </Link>
+            </PrefetchLink>
           </li>
           <li>
-            <Link to="/about" className="hover:text-gray-300">
+            <PrefetchLink to="/about" className="hover:text-gray-300">
               About
-            </Link>
+            </PrefetchLink>
           </li>
           <li>
-            <Link to="/about/ssr" className="hover:text-gray-300">
+            <PrefetchLink to="/about/ssr" className="hover:text-gray-300">
               About SSR
-            </Link>
+            </PrefetchLink>
           </li>
         </ul>
       </nav>
